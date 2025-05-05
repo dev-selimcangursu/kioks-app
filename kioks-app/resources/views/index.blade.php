@@ -182,220 +182,263 @@
             </div>
           </div>
       </body>
-      <script>
-        $(document).ready(function () {
-    
-            // Sayfa Geçişleri
-            $('#serviceButton').click(function (e) {
-                e.preventDefault();
-                $('.home').hide();
-                $('.serviceMain').show();
-            });
-    
-            $('.homeBackButton').click(function (e) {
-                e.preventDefault();
-                $('.home').show();
-                $('.serviceMain, .salesMain, .paymentMain').hide();
-            });
-    
-            $('#salesButton').click(function (e) {
-                e.preventDefault();
-                $('.home').hide();
-                $('.salesMain').show();
-            });
-    
-            $('#paymentButton').click(function (e) {
-                e.preventDefault();
-                $('.home').hide();
-                $('.paymentMain').show();
-            });
-    
-            // Referans Kodu
-            $('.referanceButton').click(function (e) {
-             e.preventDefault();
+    <script>
+  	$(document).ready(function() {
 
-             Swal.fire({
-              title: "Referans Kodunuzu Giriniz!",
-              input: "number",
-              inputAttributes: {
-                autocapitalize: "off"
-               },
-               showCancelButton: false,
-               confirmButtonText: "Tamam!",
-               showLoaderOnConfirm: true,
-               preConfirm: (referanceCode) => {
-               return $.ajax({
-                type: 'POST',
-                url: "{{route('referanceCode')}}", 
-                data: {
-                    referanceCode: referanceCode,
-                    _token: "{{ csrf_token() }}"
-                },
-                success: function (response) {
-                                    if (response.success) {
-                                        Swal.fire({
-                                            icon: 'success',
-                                            title: response.message,
-                                            confirmButtonText: "Tamam",
-                                        }).then((result) => {
-                                            if (result.isConfirmed) {
-                                                window.location.reload();
-                                            }
-                                        });
-                                    } else {
-                                        Swal.fire({
-                                            icon: "error",
-                                            title: "Hata!",
-                                            text: response.message
-                                        });
-                                    }
-                                    resolve();
-                 },
+  		// Sayfa Geçişleri
+  		$('#serviceButton').click(function(e) {
+  			e.preventDefault();
+  			$('.home').hide();
+  			$('.serviceMain').show();
+  		});
 
-            });
-        }
-    });
-});
+  		$('.homeBackButton').click(function(e) {
+  			e.preventDefault();
+  			$('.home').show();
+  			$('.serviceMain, .salesMain, .paymentMain').hide();
+  		});
 
-    
-            // İBAN Bilgileri
-            $('#openIbanInfo').click(function (e) {
-                e.preventDefault();
-                Swal.fire({
-                    icon: "warning",
-                    title: "IBAN BİLGİLERİ",
-                    html: `
+  		$('#salesButton').click(function(e) {
+  			e.preventDefault();
+  			$('.home').hide();
+  			$('.salesMain').show();
+  		});
+
+  		$('#paymentButton').click(function(e) {
+  			e.preventDefault();
+  			$('.home').hide();
+  			$('.paymentMain').show();
+  		});
+
+  		// Referans Kodu
+  		$('.referanceButton').click(function(e) {
+  			e.preventDefault();
+
+  			Swal.fire({
+  				title: "Referans Kodunuzu Giriniz!",
+  				input: "number",
+  				inputAttributes: {
+  					autocapitalize: "off"
+  				},
+  				showCancelButton: false,
+  				confirmButtonText: "Tamam!",
+  				showLoaderOnConfirm: true,
+  				preConfirm: (referanceCode) => {
+  					return $.ajax({
+  						type: 'POST',
+  						url: "{{route('referanceCode')}}",
+  						data: {
+  							referanceCode: referanceCode,
+  							_token: "{{ csrf_token() }}"
+  						},
+  						success: function(response) {
+  							if (response.success) {
+  								Swal.fire({
+  									icon: 'success',
+  									title: response.message,
+  									confirmButtonText: "Tamam",
+  								}).then((result) => {
+  									if (result.isConfirmed) {
+  										window.location.reload();
+  									}
+  								});
+  							} else {
+  								Swal.fire({
+  									icon: "error",
+  									title: "Hata!",
+  									text: response.message
+  								});
+  							}
+  							resolve();
+  						},
+
+  					});
+  				}
+  			});
+  		});
+
+
+  		// İBAN Bilgileri
+  		$('#openIbanInfo').click(function(e) {
+  			e.preventDefault();
+  			Swal.fire({
+  				icon: "warning",
+  				title: "IBAN BİLGİLERİ",
+  				html: `
                         <p><strong>IBAN:</strong> TR12 3456 7890 1234 5678 9012 3456</p>
                         <p><strong>Firma İsmi:</strong> Selimcan Gürsu</p>
                         <p><strong>Banka Şubesi:</strong> ABC Şubesi</p>
                         <p><strong>Banka:</strong> XYZ Bankası</p>
                     `,
-                });
-            });
-    
-            // Hizmet Değerlendirme
-            $('#serviceFormButton').click(function (e) {
-                e.preventDefault();
-                Swal.fire({
-                    icon: "question",
-                    title: "Hizmeti nasıl değerlendirirsiniz?",
-                    html: `
-                        <div class="rating">
-                            <i class="fa-solid fa-star fs-1" data-value="1"></i>
-                            <i class="fa-solid fa-star fs-1" data-value="2"></i>
-                            <i class="fa-solid fa-star fs-1" data-value="3"></i>
-                            <i class="fa-solid fa-star fs-1" data-value="4"></i>
-                            <i class="fa-solid fa-star fs-1" data-value="5"></i>
-                        </div>
-                    `,
-                    showConfirmButton: false,
-                    didOpen: () => {
-                        const stars = Swal.getPopup().querySelectorAll('.fa-star');
-                        stars.forEach(star => {
-                            star.addEventListener('mouseover', function () {
-                                const val = this.getAttribute('data-value');
-                                stars.forEach(s => {
-                                    s.style.color = s.getAttribute('data-value') <= val ? '#f5c518' : '#ccc';
-                                });
-                            });
-    
-                            star.addEventListener('click', function () {
-                                const selected = this.getAttribute('data-value');
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: `Teşekkürler!`,
-                                    text: `Puanınız: ${selected} yıldız`
-                                });
-                            });
-                        });
-                    }
-                });
-            });
-    
-            // Satış Bilgi Talebi
-            $('#salesInfoButton').click(function (e) {
-                e.preventDefault();
-                requestPhoneInput("{{ route('salesInfo') }}");
-            });
-    
-            // Teknik Servis Destek Talebi
-            $('#serviceSupportButton').click(function (e) {
-                e.preventDefault();
-                requestPhoneInput("{{ route('serviceSupport') }}");
-            });
-    
-            // Cihaz Teslim Etme Talebi
-            $('#giveServiceProductButton').click(function (e) {
-                e.preventDefault();
-                requestPhoneInput("{{ route('giveServiceProduct') }}");
-            });
-    
-            // Cihaz Teslim Alma Talebi
-            $('#receiveServiceProductButton').click(function (e) {
-                e.preventDefault();
-                requestPhoneInput("{{ route('giveServiceProduct') }}");
-            });
-    
-            // Ortak Telefon Numarası Giriş İsteği
-            function requestPhoneInput(url) {
-                Swal.fire({
-                    icon: "warning",
-                    title: "Telefon Numaranızı Giriniz!",
-                    input: "tel",
-                    inputAttributes: {
-                        autocapitalize: "off",
-                        placeholder: "05xxxxxxxxx"
-                    },
-                    confirmButtonText: "Talep Oluştur!",
-                    showLoaderOnConfirm: true,
-                    preConfirm: (phone) => {
-                        return new Promise((resolve, reject) => {
-                            if (!phone) {
-                                reject("Telefon numarası boş olamaz!");
-                                return;
-                            }
-    
-                            $.ajax({
-                                url: url,
-                                type: "POST",
-                                data: {
-                                    phone: phone,
-                                    _token: "{{ csrf_token() }}"
-                                },
-                                success: function (response) {
-                                    if (response.success) {
-                                        Swal.fire({
-                                            icon: 'success',
-                                            title: response.message,
-                                            confirmButtonText: "Tamam",
-                                        }).then((result) => {
-                                            if (result.isConfirmed) {
-                                                window.location.reload();
-                                            }
-                                        });
-                                    } else {
-                                        Swal.fire({
-                                            icon: "error",
-                                            title: "Hata!",
-                                            text: response.message
-                                        });
-                                    }
-                                    resolve();
-                                },
-                                error: function () {
-                                    Swal.fire({
-                                        icon: "error",
-                                        title: "İstek Hatası",
-                                        text: "Telefon numarası gönderilirken bir hata oluştu."
-                                    });
-                                    reject();
-                                }
-                            });
-                        });
-                    },
-                    allowOutsideClick: () => !Swal.isLoading()
-                });
-            }
-        });
-    </script>    
+  			});
+  		});
+
+  		// Hizmet Değerlendirme
+
+  		$('#serviceFormButton').click(function(e) {
+  			e.preventDefault();
+
+  			Swal.fire({
+  				icon: "question",
+  				title: "Hizmeti nasıl değerlendirirsiniz?",
+  				html: `
+            <div class="mb-3">
+                <select id="userSelect" class="form-select">
+                    <option value="">Kullanıcı Seçiniz</option>
+                    @foreach ($active_data as $data)
+                        <option value="{{ $data->user_id }}">{{ $data->user_name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="rating">
+                <i class="fa-solid fa-star fs-1" data-value="1"></i>
+                <i class="fa-solid fa-star fs-1" data-value="2"></i>
+                <i class="fa-solid fa-star fs-1" data-value="3"></i>
+                <i class="fa-solid fa-star fs-1" data-value="4"></i>
+                <i class="fa-solid fa-star fs-1" data-value="5"></i>
+            </div>
+        `,
+  				showConfirmButton: false,
+  				didOpen: () => {
+  					const stars = Swal.getPopup().querySelectorAll('.fa-star');
+
+  					stars.forEach(star => {
+  						star.addEventListener('mouseover', function() {
+  							const val = this.getAttribute('data-value');
+  							stars.forEach(s => {
+  								s.style.color = s.getAttribute('data-value') <= val ? '#f5c518' : '#ccc';
+  							});
+  						});
+
+  						star.addEventListener('click', function() {
+  							const selected = this.getAttribute('data-value');
+  							const user_id = $('#userSelect').val();
+
+  							if (!user_id) {
+  								Swal.fire("Uyarı", "Lütfen bir kullanıcı seçin!", "warning");
+  								return;
+  							}
+  							$.ajax({
+  								url: "{{route('markServiceRated')}}",
+  								type: 'POST',
+  								data: {
+  									user_id: user_id,
+  									rating: selected,
+  									_token: "{{ csrf_token() }}"
+  								},
+  								success: function(response) {
+  									if (response.success) {
+  										Swal.fire({
+  											icon: 'success',
+  											title: response.message,
+  											confirmButtonText: "Tamam",
+  										}).then((result) => {
+  											if (result.isConfirmed) {
+  												window.location.reload();
+  											}
+  										});
+  									} else {
+  										Swal.fire({
+  											icon: "error",
+  											title: "Hata!",
+  											text: response.message
+  										});
+  									}
+  									resolve();
+  								},
+
+  							});
+  						});
+  					});
+  				}
+  			});
+  		});
+
+
+  		// Satış Bilgi Talebi
+  		$('#salesInfoButton').click(function(e) {
+  			e.preventDefault();
+  			requestPhoneInput("{{ route('salesInfo') }}");
+  		});
+
+  		// Teknik Servis Destek Talebi
+  		$('#serviceSupportButton').click(function(e) {
+  			e.preventDefault();
+  			requestPhoneInput("{{ route('serviceSupport') }}");
+  		});
+
+  		// Cihaz Teslim Etme Talebi
+  		$('#giveServiceProductButton').click(function(e) {
+  			e.preventDefault();
+  			requestPhoneInput("{{ route('giveServiceProduct') }}");
+  		});
+
+  		// Cihaz Teslim Alma Talebi
+  		$('#receiveServiceProductButton').click(function(e) {
+  			e.preventDefault();
+  			requestPhoneInput("{{ route('giveServiceProduct') }}");
+  		});
+
+  		// Ortak Telefon Numarası Giriş İsteği
+  		function requestPhoneInput(url) {
+  			Swal.fire({
+  				icon: "warning",
+  				title: "Telefon Numaranızı Giriniz!",
+  				input: "tel",
+  				inputAttributes: {
+  					autocapitalize: "off",
+  					placeholder: "05xxxxxxxxx"
+  				},
+  				confirmButtonText: "Talep Oluştur!",
+  				showLoaderOnConfirm: true,
+  				preConfirm: (phone) => {
+  					return new Promise((resolve, reject) => {
+  						if (!phone) {
+  							reject("Telefon numarası boş olamaz!");
+  							return;
+  						}
+
+  						$.ajax({
+  							url: url,
+  							type: "POST",
+  							data: {
+  								phone: phone,
+  								_token: "{{ csrf_token() }}"
+  							},
+  							success: function(response) {
+  								if (response.success) {
+  									Swal.fire({
+  										icon: 'success',
+  										title: response.message,
+  										confirmButtonText: "Tamam",
+  									}).then((result) => {
+  										if (result.isConfirmed) {
+  											window.location.reload();
+  										}
+  									});
+  								} else {
+  									Swal.fire({
+  										icon: "error",
+  										title: "Hata!",
+  										text: response.message
+  									});
+  								}
+  								resolve();
+  							},
+  							error: function() {
+  								Swal.fire({
+  									icon: "error",
+  									title: "İstek Hatası",
+  									text: "Telefon numarası gönderilirken bir hata oluştu."
+  								});
+  								reject();
+  							}
+  						});
+  					});
+  				},
+  				allowOutsideClick: () => !Swal.isLoading()
+  			});
+  		}
+  	}); 
+</script>    
 </html>

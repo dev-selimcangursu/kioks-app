@@ -247,4 +247,40 @@ class HomeController extends Controller
             ]);
         }
     }
+
+    public function markServiceRated(Request $request)
+{
+    try {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'rating' => 'required|numeric|min:1|max:5'
+        ]);
+    
+        $data = Data::where('user_id', $request->user_id)
+                    ->where('status_id', 0)
+                    ->first();
+    
+        if (!$data) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Aktif hizmet bulunamadı.'
+            ], 404);
+        }
+    
+        $data->status_id = 1;
+        $data->save();
+    
+        return response()->json([
+            'success' => true,
+            'message' => 'Hizmet başarıyla değerlendirildi.'
+        ]);
+    } catch (Exception $error) {
+        return response()->json([
+            'success' => false,
+            'error'=> $error->getMessage(),
+            'message' => 'Hizmet Değerlendirilemedi!'
+        ]);
+    }
+}
+
 }
