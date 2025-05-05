@@ -18,13 +18,13 @@
         .person-list {
             display: flex;
             flex-direction: column;
-            gap: 20px;  
+            gap: 5px;  
         }      
         .person-card {
             display: flex;
             background: transparent;
             border-radius: 7px;
-            padding: 20px;
+            padding: 10px;
             transition: all 0.3s ease;
             border:1px solid gray;
             align-items: center;
@@ -143,13 +143,13 @@
                         </div>
                         <div style="height: 220px" class="carousel-inner">
                           <div class="carousel-item active">
-                            <img src="https://img.freepik.com/free-photo/rehearsal-preparation-groom-s-watch-hand_8353-5810.jpg?ga=GA1.1.750660428.1742764870&semt=ais_hybrid&w=740" class="d-block w-100" alt="...">
+                            <img style="height: 220px" style="object-fit: cover" src="{{asset('img.png')}}" class="d-block w-100" alt="...">
                           </div>
                           <div class="carousel-item">
-                            <img src="https://img.freepik.com/free-photo/closeup-shot-modern-cool-black-digital-watch-with-brown-leather-strap_181624-3545.jpg?ga=GA1.1.750660428.1742764870&semt=ais_hybrid&w=740" class="d-block w-100" alt="...">
+                            <img style="height: 220px" style="object-fit: cover" src="https://img.freepik.com/free-photo/closeup-shot-modern-cool-black-digital-watch-with-brown-leather-strap_181624-3545.jpg?ga=GA1.1.750660428.1742764870&semt=ais_hybrid&w=740" class="d-block w-100" alt="...">
                           </div>
                           <div class="carousel-item">
-                            <img src="https://img.freepik.com/free-photo/human-hand-working-with-laptop-networking-technology_53876-42684.jpg?ga=GA1.1.750660428.1742764870&semt=ais_hybrid&w=740" class="d-block w-100" alt="...">
+                            <img style="height: 220px" style="object-fit: cover" src="https://img.freepik.com/free-photo/human-hand-working-with-laptop-networking-technology_53876-42684.jpg?ga=GA1.1.750660428.1742764870&semt=ais_hybrid&w=740" class="d-block w-100" alt="...">
                           </div>
                         </div>
                         <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
@@ -162,9 +162,9 @@
                         </button>
                       </div>
                 </div>
-                <div class="person-list p-2">
+                <div class="person-list ">
                     @foreach($active_data as $data)
-                    <div class="person-card p-3 mt-1">
+                    <div class="person-card p-3 mt-2">
                         <div class="card-left">
                             <div class="avatar">A</div>
                         </div>
