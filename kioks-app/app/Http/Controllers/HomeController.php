@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Data;
+use App\Models\ReferanceCode;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
@@ -211,6 +212,38 @@ class HomeController extends Controller
                 "success" => false,
                 "error" => $error->getMessage(),
                 "message" => "Teknik Servis Cihaz Teslim Alma Talebi Başarıyla Oluşturulamadı!",
+            ]);
+        }
+    }
+
+    public function referanceCode(Request $request)
+    {
+        try {
+            $code = $request->input('referanceCode');
+
+            $query = ReferanceCode::where('code','=',$code)->first();
+
+            $newData = new Data();
+            $newData->phone = $query->customer_phone;
+            $newData->user_id = $query->user_id;
+            $newData->unit_id = $query->unit_id;
+            $newData->unit_main_id = $query->unit_main_id;
+            $newData->status_id = 0;
+            $newData->created_at = now();
+            $newData->updated_at = now();
+            $newData->save();
+
+            return response()->json([
+                "success" => true,
+                "message" => "İlgili Müşteri Temsilcimiz Çağırılıyor Lütfen Bekleyin!",
+            ]);
+
+
+        } catch (Exception $error) {
+             return response()->json([
+                "success" => false,
+                "error" => $error->getMessage(),
+                "message" => "Bilinmeyen Bir Hata!",
             ]);
         }
     }

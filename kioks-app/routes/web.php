@@ -8,3 +8,4 @@ Route::post('/sales-form',[HomeController::class,'salesInfo'])->name('salesInfo'
 Route::post('/service-form',[HomeController::class,'serviceSupport'])->name('serviceSupport');
 Route::post('/service-give-product-form',[HomeController::class,'giveServiceProduct'])->name('giveServiceProduct');
 Route::post('/service-receive-product-form',[HomeController::class,'receiveServiceProduct'])->name('receiveServiceProduct');
+Route::post('/service-referance-code',[HomeController::class,'referanceCode'])->name('referanceCode');

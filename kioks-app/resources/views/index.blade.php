@@ -212,25 +212,51 @@
     
             // Referans Kodu
             $('.referanceButton').click(function (e) {
-                e.preventDefault();
-                Swal.fire({
-                    title: "Referans Kodunuzu Giriniz!",
-                    input: "number",
-                    inputAttributes: {
-                        autocapitalize: "off"
-                    },
-                    showCancelButton: false,
-                    confirmButtonText: "Tamam!",
-                    showLoaderOnConfirm: true,
-                    preConfirm: async (login) => {
-                        try {
-                            // işlem
-                        } catch (error) {
-                            // hata
-                        }
-                    }
-                });
+             e.preventDefault();
+
+             Swal.fire({
+              title: "Referans Kodunuzu Giriniz!",
+              input: "number",
+              inputAttributes: {
+                autocapitalize: "off"
+               },
+               showCancelButton: false,
+               confirmButtonText: "Tamam!",
+               showLoaderOnConfirm: true,
+               preConfirm: (referanceCode) => {
+               return $.ajax({
+                type: 'POST',
+                url: "{{route('referanceCode')}}", 
+                data: {
+                    referanceCode: referanceCode,
+                    _token: "{{ csrf_token() }}"
+                },
+                success: function (response) {
+                                    if (response.success) {
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: response.message,
+                                            confirmButtonText: "Tamam",
+                                        }).then((result) => {
+                                            if (result.isConfirmed) {
+                                                window.location.reload();
+                                            }
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            icon: "error",
+                                            title: "Hata!",
+                                            text: response.message
+                                        });
+                                    }
+                                    resolve();
+                 },
+
             });
+        }
+    });
+});
+
     
             // İBAN Bilgileri
             $('#openIbanInfo').click(function (e) {
