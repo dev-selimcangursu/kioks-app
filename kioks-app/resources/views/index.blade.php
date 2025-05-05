@@ -162,50 +162,56 @@
                         </button>
                       </div>
                 </div>
-                <div class="person-list p-3">
-                    <div class="person-card p-3 mt-2">
+                <div class="person-list p-2">
+                    @foreach($active_data as $data)
+                    <div class="person-card p-3 mt-1">
                         <div class="card-left">
                             <div class="avatar">A</div>
                         </div>
                         <div class="card-right ms-3">
-                            <h5 class="name">Temsilci : Ahmet Yılmaz</h5>             
+                            <h5 class="name">Temsilci : {{$data->user_name}}</h5>             
                             <div class="d-flex justify-content-between">        
-                            <p class="subject"><i class="fas fa-comment-dots"></i> Teknik Servis Talebi</p>
-                            <p class="datetime"><i class="fas fa-clock"></i> 05-08-2025 14:30</p>
+                            <p class="subject"><i class="fas fa-comment-dots"></i> {{$data->unit_name}} | {{$data->unitMainName}}</p>
+                            <p class="datetime"><i class="fas fa-clock"></i> {{$data->created_at}}</p>
                         </div>       
                         </div>
                     </div>
+                    @endforeach
                   </div>  
                </div> 
             </div>
           </div>
-    <script>
-        $(document).ready(function() {
-            // Servis Destek 
-            $('#serviceButton').click(function(e) {
+      </body>
+      <script>
+        $(document).ready(function () {
+    
+            // Sayfa Geçişleri
+            $('#serviceButton').click(function (e) {
                 e.preventDefault();
-                $('.home').css('display', 'none');
-                $('.serviceMain').css('display', 'block');
+                $('.home').hide();
+                $('.serviceMain').show();
             });
     
-            // Anasayfaya Geri Dön
-            $('.homeBackButton').click(function(e) {
+            $('.homeBackButton').click(function (e) {
                 e.preventDefault();
-                $('.home').css('display', 'block');
-                $('.serviceMain').css('display', 'none');
-                $('.salesMain').css('display', 'none');
-                $('.paymentMain').css('display', 'none');
+                $('.home').show();
+                $('.serviceMain, .salesMain, .paymentMain').hide();
             });
     
-            // Satış Destek
-            $('#salesButton').click(function(e) {
+            $('#salesButton').click(function (e) {
                 e.preventDefault();
-                $('.home').css('display', 'none');
-                $('.salesMain').css('display', 'block');
+                $('.home').hide();
+                $('.salesMain').show();
             });
     
-            // Referans Kodu 
-            $('.referanceButton').click(function(e) {
+            $('#paymentButton').click(function (e) {
+                e.preventDefault();
+                $('.home').hide();
+                $('.paymentMain').show();
+            });
+    
+            // Referans Kodu
+            $('.referanceButton').click(function (e) {
                 e.preventDefault();
                 Swal.fire({
                     title: "Referans Kodunuzu Giriniz!",
@@ -218,37 +224,31 @@
                     showLoaderOnConfirm: true,
                     preConfirm: async (login) => {
                         try {
-                          
+                            // işlem
                         } catch (error) {
-                          
+                            // hata
                         }
                     }
                 });
             });
     
-            // Ödeme Destek
-            $('#paymentButton').click(function(e) {
-                e.preventDefault();
-                $('.home').css('display', 'none');
-                $('.paymentMain').css('display', 'block');
-            });
-    
-            // İban Bilgi 
-            $('#openIbanInfo').click(function(e) {
+            // İBAN Bilgileri
+            $('#openIbanInfo').click(function (e) {
                 e.preventDefault();
                 Swal.fire({
                     icon: "warning",
-                    title: "İBAN BİLGİLERİ",
+                    title: "IBAN BİLGİLERİ",
                     html: `
-                        <p><strong>İban:</strong> 123456789</p>
-                        <p><strong>Firma İsmi:</strong> X Elektronik</p>
+                        <p><strong>IBAN:</strong> TR12 3456 7890 1234 5678 9012 3456</p>
+                        <p><strong>Firma İsmi:</strong> Selimcan Gürsu</p>
                         <p><strong>Banka Şubesi:</strong> ABC Şubesi</p>
-                        <p><strong>Banka:</strong> XYZ Bankası</p>`,
+                        <p><strong>Banka:</strong> XYZ Bankası</p>
+                    `,
                 });
             });
     
             // Hizmet Değerlendirme
-            $('#serviceFormButton').click(function(e) {
+            $('#serviceFormButton').click(function (e) {
                 e.preventDefault();
                 Swal.fire({
                     icon: "question",
@@ -266,14 +266,14 @@
                     didOpen: () => {
                         const stars = Swal.getPopup().querySelectorAll('.fa-star');
                         stars.forEach(star => {
-                            star.addEventListener('mouseover', function() {
+                            star.addEventListener('mouseover', function () {
                                 const val = this.getAttribute('data-value');
                                 stars.forEach(s => {
                                     s.style.color = s.getAttribute('data-value') <= val ? '#f5c518' : '#ccc';
                                 });
                             });
     
-                            star.addEventListener('click', function() {
+                            star.addEventListener('click', function () {
                                 const selected = this.getAttribute('data-value');
                                 Swal.fire({
                                     icon: 'success',
@@ -285,79 +285,91 @@
                     }
                 });
             });
-            // Satış Bilgi Alma Butonu
-            $('#salesInfoButton').click(function(e){
+    
+            // Satış Bilgi Talebi
+            $('#salesInfoButton').click(function (e) {
                 e.preventDefault();
-                Swal.fire({
-                icon:"warning",
-                title: "Telefon Numaranızı Giriniz!",
-                input: "tel",
-                inputAttributes: {
-                autocapitalize: "off"
-            },
-                showCancelButton: false,
-                confirmButtonText: "Tamam !",
-                showLoaderOnConfirm: true,
-                preConfirm: async (login) => {
-   
-             },
-            })
-           })
-           // Teknik Servis Destek Talep Butonu
-           $('#serviceSupportButton').click(function(e){
+                requestPhoneInput("{{ route('salesInfo') }}");
+            });
+    
+            // Teknik Servis Destek Talebi
+            $('#serviceSupportButton').click(function (e) {
                 e.preventDefault();
-                Swal.fire({
-                icon:"warning",
-                title: "Telefon Numaranızı Giriniz!",
-                input: "tel",
-                inputAttributes: {
-                autocapitalize: "off"
-            },
-                showCancelButton: false,
-                confirmButtonText: "Tamam !",
-                showLoaderOnConfirm: true,
-                preConfirm: async (login) => {
-   
-             },
-            })
-           })
-            // Teknik Servis Cihazı Teslim Et Butonu
-           $('#giveServiceProductButton').click(function(e){
+                requestPhoneInput("{{ route('serviceSupport') }}");
+            });
+    
+            // Cihaz Teslim Etme Talebi
+            $('#giveServiceProductButton').click(function (e) {
                 e.preventDefault();
-                Swal.fire({
-                icon:"warning",
-                title: "Telefon Numaranızı Giriniz!",
-                input: "tel",
-                inputAttributes: {
-                autocapitalize: "off"
-            },
-                showCancelButton: false,
-                confirmButtonText: "Tamam !",
-                showLoaderOnConfirm: true,
-                preConfirm: async (login) => {
-   
-             },
-            })
-           })
-            // Teknik Servis Cihazı Teslim Al Butonu
-           $('#receiveServiceProductButton').click(function(e){
+                requestPhoneInput("{{ route('giveServiceProduct') }}");
+            });
+    
+            // Cihaz Teslim Alma Talebi
+            $('#receiveServiceProductButton').click(function (e) {
                 e.preventDefault();
+                requestPhoneInput("{{ route('giveServiceProduct') }}");
+            });
+    
+            // Ortak Telefon Numarası Giriş İsteği
+            function requestPhoneInput(url) {
                 Swal.fire({
-                icon:"warning",
-                title: "Telefon Numaranızı Giriniz!",
-                input: "tel",
-                inputAttributes: {
-                autocapitalize: "off"
-            },
-                showCancelButton: false,
-                confirmButtonText: "Tamam !",
-                showLoaderOnConfirm: true,
-                preConfirm: async (login) => {
-   
-             },
-            })
-           })
+                    icon: "warning",
+                    title: "Telefon Numaranızı Giriniz!",
+                    input: "tel",
+                    inputAttributes: {
+                        autocapitalize: "off",
+                        placeholder: "05xxxxxxxxx"
+                    },
+                    confirmButtonText: "Talep Oluştur!",
+                    showLoaderOnConfirm: true,
+                    preConfirm: (phone) => {
+                        return new Promise((resolve, reject) => {
+                            if (!phone) {
+                                reject("Telefon numarası boş olamaz!");
+                                return;
+                            }
+    
+                            $.ajax({
+                                url: url,
+                                type: "POST",
+                                data: {
+                                    phone: phone,
+                                    _token: "{{ csrf_token() }}"
+                                },
+                                success: function (response) {
+                                    if (response.success) {
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: response.message,
+                                            confirmButtonText: "Tamam",
+                                        }).then((result) => {
+                                            if (result.isConfirmed) {
+                                                window.location.reload();
+                                            }
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            icon: "error",
+                                            title: "Hata!",
+                                            text: response.message
+                                        });
+                                    }
+                                    resolve();
+                                },
+                                error: function () {
+                                    Swal.fire({
+                                        icon: "error",
+                                        title: "İstek Hatası",
+                                        text: "Telefon numarası gönderilirken bir hata oluştu."
+                                    });
+                                    reject();
+                                }
+                            });
+                        });
+                    },
+                    allowOutsideClick: () => !Swal.isLoading()
+                });
+            }
         });
-    </script>
-  </body>
+    </script>    
 </html>
